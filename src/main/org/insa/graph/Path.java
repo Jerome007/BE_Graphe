@@ -224,11 +224,14 @@ public class Path {
      * 
      * @return Minimum travel time to travel this path (in seconds).
      * 
-     * @deprecated Need to be implemented.
      */
     public double getMinimumTravelTime() {
-        // TODO:
-        return 0;
+    	double som = 0;
+        for (Arc arc: this.arcs)
+        {
+        	som += arc.getMinimumTravelTime();
+        }
+        return som;
     }
 
 }
