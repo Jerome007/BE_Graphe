@@ -215,7 +215,10 @@ public class Path {
      * 
      */
     public double getTravelTime(double speed) {
-        return (speed*100)/(6*this.getLength());
+    	double time = 0;
+    	for (Arc arc:this.arcs)
+    		time = time + arc.getTravelTime(speed);
+        return time;
     }
 
     /**
