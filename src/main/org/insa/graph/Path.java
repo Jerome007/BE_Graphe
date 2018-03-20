@@ -188,6 +188,19 @@ public class Path {
      */
     public boolean isValid() {
         // TODO:
+    	if (this.isEmpty()) return true;
+    	if (this.getArcs().size() == 0) return true;
+    	
+    	Node dest_prec = this.origin;
+    	for (Arc arc:this.arcs)
+    		if (dest_prec != arc.getOrigin())
+    			return false;
+    		else
+    			dest_prec = arc.getDestination();
+    	
+    	if (this.getDestination() == dest_prec) return true;
+    		
+    		
         return false;
     }
 
