@@ -28,13 +28,13 @@ public class Path {
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
+        List<Arc> arcs = new ArrayList<Arc>();  //Liste d'arcs à remplir
         double timeoftravel = -1;
         Arc arctrouve = null;
-        for (int i = 0;i<(nodes.size() - 1);i++)
+        for (int i = 0;i<(nodes.size()-1);i++)  //On parcours les noeuds de la liste
         {
         	timeoftravel = -1;
-        	for (Arc arc: nodes.get(i))
+        	for (Arc arc: nodes.get(i))  //On parcours les arcs partant de chaque noeud
         	{
         		if (arc.getDestination() == nodes.get(i+1) && (timeoftravel == -1 || arc.getMinimumTravelTime() < timeoftravel))
         		{
@@ -42,9 +42,23 @@ public class Path {
         			arctrouve = arc;
         		}
         	}
+        	if (timeoftravel == -1)
+        	{
+        		throw new IllegalArgumentException();
+        	}
         	arcs.add(arctrouve);	
         }
-        
+        //Si la liste de noeuds est vide
+        if (nodes.size() == 0)
+        {
+        	return new Path(graph);
+        }
+        //Si la liste de noeuds ne comporte qu'un seul noeud
+        if (nodes.size() == 1)
+        {
+        	return new Path(graph, nodes.get(0));
+        }
+        //Si pas de probleme on retourne le chemin le plus rapide
         return new Path(graph, arcs);
     }
 
