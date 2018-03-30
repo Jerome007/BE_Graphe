@@ -30,8 +30,6 @@ public class Path {
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        hello
-        )
         return new Path(graph, arcs);
     }
 
