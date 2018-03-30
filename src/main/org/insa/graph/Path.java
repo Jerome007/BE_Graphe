@@ -1,5 +1,4 @@
 package org.insa.graph;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +29,21 @@ public class Path {
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        
+        double timeoftravel = -1;
+        Arc arctrouve = null;
+        for (int i = 0;i<(nodes.size() - 1);i++)
+        {
+        	timeoftravel = -1;
+        	for (Arc arc: nodes.get(i))
+        	{
+        		if (arc.getDestination() == nodes.get(i+1) && (timeoftravel == -1 || arc.getMinimumTravelTime() < timeoftravel))
+        		{
+        			timeoftravel = arc.getMinimumTravelTime();
+        			arctrouve = arc;
+        		}
+        	}
+        	arcs.add(arctrouve);	
+        }
         
         return new Path(graph, arcs);
     }
