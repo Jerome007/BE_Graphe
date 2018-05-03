@@ -34,13 +34,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
        }
        Label.getLabel(data.getOrigin().getId()).setEtiquette(0);
        tas.insert(Label.getLabel(data.getOrigin().getId())); 
-       notifyOriginProcessed(data.getOrigin());
+       //notifyOriginProcessed(data.getOrigin());
 
         //Traitement
         while ((!locked.containsKey(data.getDestination().getId())) && !tas.isEmpty())
         {
         	labelMin = tas.deleteMin();
         	locked.put(labelMin.getNode().getId(),labelMin.getNode());
+        	//on colorie les noeuds marqués
         	notifyNodeMarked(labelMin.getNode());
 
         	//pour tous les suivants du labelmin
@@ -75,7 +76,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         if (locked.containsKey(data.getDestination().getId()))
         {
         	//on indique qu'on a atteint la destination
-        	notifyDestinationReached(data.getDestination());
+        	//notifyDestinationReached(data.getDestination());
         }
         
         //on va creer la liste d'arc solution
