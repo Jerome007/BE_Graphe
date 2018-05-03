@@ -1,114 +1,95 @@
 package org.insa.algo.shortestpath;
 
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator;
 
+import org.insa.algo.AbstractSolution.Status;
 import org.insa.algo.utils.BinaryHeap;
-import org.insa.algo.utils.EmptyPriorityQueueException;
+import org.insa.algo.utils.Label;
 import org.insa.graph.Arc;
-import org.insa.graph.Graph;
 import org.insa.graph.Node;
-import java.util.HashMap;
-import java.util.Map;
+import org.insa.graph.Path;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
-	
-	public Map<Node, Label> hm = new HashMap<>();
-	public int nb_marques = 0;
-	
-	
-    public DijkstraAlgorithm(ShortestPathData data) {
-        super(data);
-    }
+	public DijkstraAlgorithm(ShortestPathData data) {
+		super(data);
+	}
 
-    @Override
+	@Override
     protected ShortestPathSolution doRun() {
         ShortestPathData data = getInputData();
         ShortestPathSolution solution = null;
-    	
-        Graph graphe = data.getGraph();
-        int size_graphe = graphe.size();
-        Boolean path_find = false;
-        Node origin = data.getOrigin();
-        Node destination = data.getDestination();  
-        
-        Node current_node = origin;
-        
+        int i = 0;
+        Label labelMin;
+        //Initialisations
+        HashMap<Integer,Node> locked = new HashMap<Integer,Node>();
         BinaryHeap<Label> tas = new BinaryHeap<Label>();
         
-        Label label = new Label(current_node,0,null,null);
-        hm.put(current_node, label);
-        
-        tas.insert(label);
-        
-        Label label_current = null;
-        Node y = null;
-        Label label_y = null;
-        
-        float cout_y = 0;
-        
-        while (nb_marques < size_graphe && path_find == false) {
-        	System.out.println(nb_marques);
-        	
-        	try {
-        		label_current = tas.findMin();
-        	}
-        	catch (EmptyPriorityQueueException e) {
-        		path_find = true;
-        	}
-        	
-        	current_node = label_current.node;
-        	label_current.mark=true;
-        	
-        	if (current_node == destination) {
-    			System.out.println("trouvé sale tepu");
-    			path_find = true;
-        	}
-        	tas.deleteMin();
-        	nb_marques++;
-        	
-        	
-        	for (Arc arc: current_node) {
-        		y = arc.getDestination();
-        		if (hm.containsKey(y) != true) {
-        			hm.put(y,new Label(y,-1,current_node,arc));
-        		}
-        		
-        		label_y = hm.get(y);
-        		
-           		
-        		if (label_y.mark == false) {
-        			cout_y = label_y.cost;
+     
+       
+       for (Node n : data.getGraph())
+       {
+    	   new Label(Double.POSITIVE_INFINITY,n);
+       }
+       Label.getLabel(data.getOrigin().getId()).setEtiquette(0);
+       tas.insert(Label.getLabel(data.getOrigin().getId())); 
+       notifyOriginProcessed(data.getOrigin());
+
+        //Traitement
+        while ((!locked.containsKey(data.getDestination().getId())) && !tas.isEmpty())
+        {
+        	labelMin = tas.deleteMin();
+        	locked.put(labelMin.getNode().getId(),labelMin.getNode());
+        	notifyNodeMarked(labelMin.getNode());
+
+        	for (Arc a : labelMin.getNode())
+        	{
+        		if (labelMin.getEtiquette()+a.getLength()<Label.getLabel(a.getDestination()).getEtiquette())
+        		{
+        			if (Label.getLabel(a.getDestination()).getEtiquette() != Double.POSITIVE_INFINITY && !locked.containsKey(a.getDestination().getId()))
+        			{
+        				tas.remove(Label.getLabel(a.getDestination()));
+        			}
+        			else
+        			{
+        				notifyNodeReached(a.getDestination());
+        			}
+        			Label.getLabel(a.getDestination()).setEtiquette(labelMin.getEtiquette()+a.getLength());
+        			Label.getLabel(a.getDestination()).setPrevNode(a.getOrigin());
+        			Label.getLabel(a.getDestination()).setPrevArc(a);
         			
-        			if (label_y.cost > label_current.cost+arc.getLength() || label_y.cost == -1) {
-        				label_y.cost = label_current.cost+arc.getLength();	
-        			}
-        			if (cout_y != -1) {
-        				tas.remove(label_y); //on update le noeud dans le tas
-        			}
-    				tas.insert(label_y);
+        			tas.insert(Label.getLabel(a.getDestination()));
         		}
         	}
-        	
+        }
+        if (locked.containsKey(data.getDestination().getId()))
+        {
+        	notifyDestinationReached(data.getDestination());
+        }
+        ArrayList<Arc> listArcs = new ArrayList<Arc>();
+        Node n = data.getDestination();
+        while (Label.getLabel(n).getPrevNode() != null)
+        {
+        	listArcs.add(Label.getLabel(n).getPrevArc());
+        	n = Label.getLabel(n).getPrevNode();
+        }
+        Collections.reverse(listArcs);
+        
+        if(listArcs.size()== 0)
+        {
+        	solution = new ShortestPathSolution(data, Status.INFEASIBLE);
+        }
+        else
+        {
+        	solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(data.getGraph(),listArcs));
         }
         
-        ArrayList<Arc> listeSol = new ArrayList<Arc>();
-		
-		
-		while(label_current.node != origin) {    				
-			listeSol.add(label_current.father_arc);
-			label_current = hm.get(label_current.father);
-		}
-		
-		Collections.reverse(listeSol);
-		
-		return solution;
-		
+        
+        
+        return solution;
     }
 
 }
