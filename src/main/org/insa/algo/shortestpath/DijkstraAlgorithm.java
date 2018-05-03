@@ -77,26 +77,35 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	//on indique qu'on a atteint la destination
         	notifyDestinationReached(data.getDestination());
         }
+        
+        //on va creer la liste d'arc solution
         ArrayList<Arc> listArcs = new ArrayList<Arc>();
+        //on recupere la destination de shortestpath
         Node n = data.getDestination();
+        //tant que il existe un precedent
         while (Label.getLabel(n).getPrevNode() != null)
         {
+        	//on ajoute l'arc vers le precedent(contenu dans label) a la liste
         	listArcs.add(Label.getLabel(n).getPrevArc());
         	n = Label.getLabel(n).getPrevNode();
         }
+        //on inverse la liste d'arc pour mettre la destination a la fin
         Collections.reverse(listArcs);
         
+        //si la liste est vide
         if(listArcs.size()== 0)
         {
+        	//on va renvoyer une solution marquée infaisable
         	solution = new ShortestPathSolution(data, Status.INFEASIBLE);
         }
         else
         {
+        	//sinon on va renvoyer une solution marquée optimale
         	solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(data.getGraph(),listArcs));
         }
         
         
-        
+        //on renvoit la solution
         return solution;
     }
 
