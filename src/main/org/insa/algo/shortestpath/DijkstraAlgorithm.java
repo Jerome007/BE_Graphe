@@ -3,8 +3,6 @@ package org.insa.algo.shortestpath;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-
 import org.insa.algo.AbstractSolution.Status;
 import org.insa.algo.utils.BinaryHeap;
 import org.insa.algo.utils.Label;
@@ -45,16 +43,21 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	locked.put(labelMin.getNode().getId(),labelMin.getNode());
         	notifyNodeMarked(labelMin.getNode());
 
+        	//pour tous les suivants du labelmin
         	for (Arc a : labelMin.getNode())
         	{
+        		//if(cost(y)>cost(x)+W(x,y))
         		if (labelMin.getEtiquette()+a.getLength()<Label.getLabel(a.getDestination()).getEtiquette())
         		{
+        			//si le cout est différent de l'infini ou si le suivant est deja locked
         			if (Label.getLabel(a.getDestination()).getEtiquette() != Double.POSITIVE_INFINITY && !locked.containsKey(a.getDestination().getId()))
         			{
+        				//on le supprime du tas
         				tas.remove(Label.getLabel(a.getDestination()));
         			}
         			else
         			{
+        				//sinon, on indique qu'on a atteint la destination
         				notifyNodeReached(a.getDestination());
         			}
         			Label.getLabel(a.getDestination()).setEtiquette(labelMin.getEtiquette()+a.getLength());
