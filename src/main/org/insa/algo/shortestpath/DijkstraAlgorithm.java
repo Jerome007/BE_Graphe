@@ -27,7 +27,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         BinaryHeap<Label> tas = new BinaryHeap<Label>();
         
      
-       
+       //on met tous les labels des noeuds dans le tas
        for (Node n : data.getGraph())
        {
     	   new Label(Double.POSITIVE_INFINITY,n);
@@ -57,19 +57,24 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			}
         			else
         			{
-        				//sinon, on indique qu'on a atteint la destination
+        				//sinon, on indique qu'on a atteint le noeud
         				notifyNodeReached(a.getDestination());
         			}
+        			
+        			//on update le label du suivant
         			Label.getLabel(a.getDestination()).setEtiquette(labelMin.getEtiquette()+a.getLength());
         			Label.getLabel(a.getDestination()).setPrevNode(a.getOrigin());
         			Label.getLabel(a.getDestination()).setPrevArc(a);
         			
+        			//et on le reinsert dans le tas
         			tas.insert(Label.getLabel(a.getDestination()));
         		}
         	}
         }
+        //si la destination du shortest path est dans le hasmap Locked
         if (locked.containsKey(data.getDestination().getId()))
         {
+        	//on indique qu'on a atteint la destination
         	notifyDestinationReached(data.getDestination());
         }
         ArrayList<Arc> listArcs = new ArrayList<Arc>();
