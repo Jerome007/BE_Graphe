@@ -1,4 +1,4 @@
-package org.insa.graph;
+package org.insa.algo.shortestpath;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.insa.algo.ArcInspectorFactory;
+import org.insa.algo.shortestpath.ShortestPathData;
+import org.insa.algo.shortestpath.ShortestPathSolution;
 import org.insa.graph.RoadInformation.RoadType;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,6 +18,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import org.insa.algo.AbstractSolution.Status;
+import org.insa.algo.utils.BinaryHeap;
+import org.insa.algo.utils.Label;
+import org.insa.graph.Arc;
+import org.insa.graph.Graph;
+import org.insa.graph.Node;
+import org.insa.graph.Path;
+import org.insa.graph.RoadInformation;
 
 public class DikstraTest {
 
@@ -69,25 +84,25 @@ public class DikstraTest {
     
     @Test
     public void testConstructor() {
-        assertEquals(graph, emptyPath.getGraph());
-        assertEquals(graph, singleNodePath.getGraph());
-        assertEquals(graph, shortPath.getGraph());
-        assertEquals(graph, longPath.getGraph());
-        assertEquals(graph, loopPath.getGraph());
-        assertEquals(graph, longLoopPath.getGraph());
-        assertEquals(graph, invalidPath.getGraph());
+        //TODO
             
         }
     @Test
-    public void testIsEmpty() {
-        assertTrue(emptyPath.isEmpty());
-
-        assertFalse(singleNodePath.isEmpty());
-        assertFalse(shortPath.isEmpty());
-        assertFalse(longPath.isEmpty());
-        assertFalse(loopPath.isEmpty());
-        assertFalse(longLoopPath.isEmpty());
-        assertFalse(invalidPath.isEmpty());
+    public void testShortestPathSolution() {
+        //Creation de la data
+    	inspector = ArcInspectorFactory.getAllFilters().get(0);
+    	ShortestPathData data0 = new ShortestPathData(graph,graph.get(0),graph.get(4),inspector);
+    	ShortestPathData data1 = new ShortestPathData(graph,graph.get(2),graph.get(5),inspector);
+    	ShortestPathData data2 = new ShortestPathData(graph,graph.get(3),graph.get(2),inspector);
+    	ShortestPathData data3 = new ShortestPathData(graph,graph.get(1),graph.get(0),inspector);
+    	ShortestPathData data4 = new ShortestPathData(graph,graph.get(4),graph.get(3),inspector);
+    	
+    	//Utilisation de l'oracle BellmanFord
+    	ShortestPathSolution sol0 = BellmanFordAlgorithm(data0);
+    	ShortestPathSolution sol1 = BellmanFordAlgorithm(data0);
+    	ShortestPathSolution sol2 = BellmanFordAlgorithm(data0);
+    	ShortestPathSolution sol3 = BellmanFordAlgorithm(data0);
+    	ShortestPathSolution sol4 = BellmanFordAlgorithm(data0);
     }
             
 
