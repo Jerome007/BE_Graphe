@@ -7,15 +7,15 @@ import org.insa.graph.Node;
 
 public class Label implements Comparable<Label> {
 	
-	private double etiquette;
+	protected double cout;
 	private Node node;
 	private Node prevNode;
 	private Arc prevArc;
-	private static HashMap<Integer,Label> dico = new HashMap<Integer,Label>();
+	protected static HashMap<Integer,Label> dico = new HashMap<Integer,Label>();
 	
-	public Label(double etiquette, Node n)
+	public Label(double cout, Node n)
 	{
-		this.etiquette = etiquette;
+		this.cout = cout;
 		this.node = n;
 		this.prevNode = null;
 		this.prevArc = null;
@@ -52,9 +52,9 @@ public class Label implements Comparable<Label> {
 		return dico.get(node.getId());
 	}
 	
-	public double getEtiquette()
+	public double getCost()
 	{
-		return this.etiquette;
+		return this.cout;
 	}
 	
 	public Node getNode()
@@ -65,11 +65,11 @@ public class Label implements Comparable<Label> {
 
 	@Override
 	public int compareTo(Label o) {
-		return (int) (this.etiquette - o.getEtiquette());
+		return (int) (this.getCost() - o.getCost());
 	}
 
-	public void setEtiquette(double d) {
-		this.etiquette = d;
+	public void setCost(double d) {
+		this.cout = d;
 	}
 
 }

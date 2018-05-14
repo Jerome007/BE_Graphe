@@ -20,7 +20,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     protected ShortestPathSolution doRun() {
         ShortestPathData data = getInputData();
         ShortestPathSolution solution = null;
-        int i = 0;
+
         Label labelMin;
         //Initialisations
         HashMap<Integer,Node> locked = new HashMap<Integer,Node>();
@@ -32,7 +32,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
        {
     	   new Label(Double.POSITIVE_INFINITY,n);
        }
-       Label.getLabel(data.getOrigin().getId()).setEtiquette(0);
+       Label.getLabel(data.getOrigin().getId()).setCost(0);
        tas.insert(Label.getLabel(data.getOrigin().getId())); 
        //notifyOriginProcessed(data.getOrigin());
 
@@ -53,10 +53,10 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 				}
 				
         		//if(cost(y)>cost(x)+W(x,y))
-        		if (labelMin.getEtiquette()+a.getLength()<Label.getLabel(a.getDestination()).getEtiquette())
+        		if (labelMin.getCost()+a.getLength()<Label.getLabel(a.getDestination()).getCost())
         		{
         			//si le cout est différent de l'infini ou si le suivant est deja locked
-        			if (Label.getLabel(a.getDestination()).getEtiquette() != Double.POSITIVE_INFINITY && !locked.containsKey(a.getDestination().getId()))
+        			if (Label.getLabel(a.getDestination()).getCost() != Double.POSITIVE_INFINITY && !locked.containsKey(a.getDestination().getId()))
         			{
         				//on le supprime du tas
         				tas.remove(Label.getLabel(a.getDestination()));
@@ -68,7 +68,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			}
         			
         			//on update le label du suivant
-        			Label.getLabel(a.getDestination()).setEtiquette(labelMin.getEtiquette()+a.getLength());
+        			Label.getLabel(a.getDestination()).setCost(labelMin.getCost()+a.getLength());
         			Label.getLabel(a.getDestination()).setPrevNode(a.getOrigin());
         			Label.getLabel(a.getDestination()).setPrevArc(a);
         			
