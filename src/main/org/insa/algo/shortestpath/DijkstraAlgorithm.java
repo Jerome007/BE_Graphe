@@ -48,7 +48,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	for (Arc a : labelMin.getNode())
         	{
         		// Small test to check allowed roads...
-				if (!data.isAllowed(arc)) {
+				if (!data.isAllowed(a)) {
 					continue;
 				}
 				
