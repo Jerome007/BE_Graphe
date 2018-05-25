@@ -29,15 +29,20 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         BinaryHeap<Label> tas = new BinaryHeap<Label>();
         
         double estimation = 0;
+        double delta = 1.5;
+        double estimation_destination = data.getOrigin().getPoint().distanceTo(data.getDestination().getPoint()) * delta;
+
+        
        //on met tous les labels des noeuds dans le tas
        for (Node n : data.getGraph())
        {
-    	   new LabelStar(Double.POSITIVE_INFINITY,n,Double.POSITIVE_INFINITY);
+    	   new LabelStar(Double.POSITIVE_INFINITY,n,estimation_destination);
        }
-       LabelStar.getLabel(data.getOrigin().getId()).setCost(0);
+       LabelStar.getLabel(data.getOrigin().getId()).setCost(0,0);
        tas.insert(LabelStar.getLabel(data.getOrigin().getId())); 
-       //notifyOriginProcessed(data.getOrigin());
-
+       notifyOriginProcessed(data.getOrigin());
+       
+       
         //Traitement
         while ((!locked.containsKey(data.getDestination().getId())) && !tas.isEmpty())
         {
@@ -46,49 +51,55 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         	//on colorie les noeuds marqués
         	notifyNodeMarked(labelMin.getNode());
 
-        	//pour tous les suivants du labelmin
-        	for (Arc a : labelMin.getNode())
+        	if (labelMin.getEstim()+(data.getOrigin().getPoint().distanceTo(labelMin.getNode().getPoint())) <= estimation_destination)
         	{
-        		// Small test to check allowed roads...
-				if (!data.isAllowed(a)) {
-					continue;
-				}
-				
-        		//if(cost(y)>cost(x)+W(x,y))
-        		if (labelMin.getCost()+a.getLength()<LabelStar.getLabel(a.getDestination()).getCost())
-        		{
-        			//si le cout est différent de l'infini ou si le suivant est deja locked
-        			if (LabelStar.getLabel(a.getDestination()).getCost() != Double.POSITIVE_INFINITY && !locked.containsKey(a.getDestination().getId()))
-        			{
-        				//on le supprime du tas
-        				tas.remove(LabelStar.getLabel(a.getDestination()));
-        			}
-        			else
-        			{
-        				//sinon, on indique qu'on a atteint le noeud
-        				notifyNodeReached(a.getDestination());
-        			}
-        			
-        			//on update l'estimation de la distance restante entre le noeud et la destination
-        			estimation = a.getDestination().getPoint().distanceTo(data.getDestination().getPoint());
-        			LabelStar.getLabel(a.getDestination()).setEstim(estimation);
-        			
-        			
-        			//on update le label du suivant
-        			LabelStar.getLabel(a.getDestination()).setCost(labelMin.getCost()+a.getLength());
-        			LabelStar.getLabel(a.getDestination()).setPrevNode(a.getOrigin());
-        			LabelStar.getLabel(a.getDestination()).setPrevArc(a);
-        			
-        			//et on le reinsert dans le tas
-        			tas.insert(LabelStar.getLabel(a.getDestination()));
-        		}
+	        	//pour tous les suivants du labelmin
+	        	for (Arc a : labelMin.getNode())
+	        	{
+	        		//Small test to check allowed roads...
+					if (!data.isAllowed(a)) {
+						continue;
+					}
+					
+	
+					//if(cost(y)>cost(x)+W(x,y))
+	        		if (labelMin.getCost()+a.getLength()<LabelStar.getLabel(a.getDestination()).getCost())
+	        		{
+	        			//si le cout est différent de l'infini ou si le suivant est deja locked
+	        			if (LabelStar.getLabel(a.getDestination()).getCost() != Double.POSITIVE_INFINITY && !locked.containsKey(a.getDestination().getId()))
+	        			{
+	        				//on le supprime du tas
+	        				tas.remove(LabelStar.getLabel(a.getDestination()));
+	        			}
+	        			else
+	        			{
+	        				//sinon, on indique qu'on a atteint le noeud
+	        				notifyNodeReached(a.getDestination());
+	        			}
+	        			
+	        			//on update l'estimation de la distance restante entre le noeud et la destination
+	        			estimation = a.getDestination().getPoint().distanceTo(data.getDestination().getPoint());
+	        			LabelStar.getLabel(a.getDestination()).setEstim(estimation);
+	        			
+	        			
+	        			//on update le label du suivant
+	        			LabelStar.getLabel(a.getDestination()).setCost(labelMin.getCout()+a.getLength());
+	        			LabelStar.getLabel(a.getDestination()).setPrevNode(a.getOrigin());
+	        			LabelStar.getLabel(a.getDestination()).setPrevArc(a);
+	        			
+	        			//et on le reinsert dans le tas
+	        			tas.insert(LabelStar.getLabel(a.getDestination()));
+	        		}
+	        	}
         	}
+        	
         }
+        
         //si la destination du shortest path est dans le hasmap Locked
         if (locked.containsKey(data.getDestination().getId()))
         {
         	//on indique qu'on a atteint la destination
-        	//notifyDestinationReached(data.getDestination());
+        	notifyDestinationReached(data.getDestination());
         }
         
         //on va creer la liste d'arc solution

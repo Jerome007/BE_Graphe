@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.insa.algo.AbstractSolution.Status;
 import org.insa.algo.utils.BinaryHeap;
 import org.insa.algo.utils.Label;
+import org.insa.algo.utils.LabelStar;
 import org.insa.graph.Arc;
 import org.insa.graph.Node;
 import org.insa.graph.Path;
@@ -34,7 +35,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
        }
        Label.getLabel(data.getOrigin().getId()).setCost(0);
        tas.insert(Label.getLabel(data.getOrigin().getId())); 
-       //notifyOriginProcessed(data.getOrigin());
+       notifyOriginProcessed(data.getOrigin());
 
         //Traitement
         while ((!locked.containsKey(data.getDestination().getId())) && !tas.isEmpty())
@@ -81,7 +82,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         if (locked.containsKey(data.getDestination().getId()))
         {
         	//on indique qu'on a atteint la destination
-        	//notifyDestinationReached(data.getDestination());
+        	notifyDestinationReached(data.getDestination());
         }
         
         //on va creer la liste d'arc solution
