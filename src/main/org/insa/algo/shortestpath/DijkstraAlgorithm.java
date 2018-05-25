@@ -54,7 +54,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 				}
 				
         		//if(cost(y)>cost(x)+W(x,y))
-        		if (labelMin.getCost()+a.getLength()<Label.getLabel(a.getDestination()).getCost())
+        		if (labelMin.getCost()+data.getCost(a)<Label.getLabel(a.getDestination()).getCost())
         		{
         			//si le cout est différent de l'infini ou si le suivant est deja locked
         			if (Label.getLabel(a.getDestination()).getCost() != Double.POSITIVE_INFINITY && !locked.containsKey(a.getDestination().getId()))
@@ -69,7 +69,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			}
         			
         			//on update le label du suivant
-        			Label.getLabel(a.getDestination()).setCost(labelMin.getCost()+a.getLength());
+        			Label.getLabel(a.getDestination()).setCost(labelMin.getCost()+data.getCost(a));
         			Label.getLabel(a.getDestination()).setPrevNode(a.getOrigin());
         			Label.getLabel(a.getDestination()).setPrevArc(a);
         			

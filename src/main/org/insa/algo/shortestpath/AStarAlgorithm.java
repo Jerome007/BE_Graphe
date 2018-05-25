@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.insa.algo.AbstractInputData.Mode;
 import org.insa.algo.AbstractSolution.Status;
 import org.insa.algo.utils.BinaryHeap;
 import org.insa.algo.utils.Label;
@@ -28,14 +29,16 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         HashMap<Integer,Node> locked = new HashMap<Integer,Node>();
         BinaryHeap<Label> tas = new BinaryHeap<Label>();
         
+        int mode = 1;
+        if (this.data.getMode().equals(Mode.TIME)) mode = (1/this.data.getMaximumSpeed());
+        if(mode==-1) mode=1/100;
+        
         double estimation = 0;
-        double estimation_destination = data.getOrigin().getPoint().distanceTo(data.getDestination().getPoint());
-
         
        //on met tous les labels des noeuds dans le tas
        for (Node n : data.getGraph())
        {
-    	   new LabelStar(Double.POSITIVE_INFINITY,n,estimation_destination);
+    	   new LabelStar(Double.POSITIVE_INFINITY,n,n.getPoint().distanceTo(data.getDestination().getPoint()) * mode);
        }
        LabelStar.getLabel(data.getOrigin().getId()).setCost(0,0);
        tas.insert(LabelStar.getLabel(data.getOrigin().getId())); 
@@ -61,7 +64,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
 					
 	
 				//if(cost(y)>cost(x)+W(x,y))
-        		if (labelMin.getCost()+a.getLength()<LabelStar.getLabel(a.getDestination()).getCost())
+        		if (labelMin.getCost()+data.getCost(a) < LabelStar.getLabel(a.getDestination()).getCost())
         		{
         			//si le cout est différent de l'infini ou si le suivant est deja locked
         			if (LabelStar.getLabel(a.getDestination()).getCost() != Double.POSITIVE_INFINITY && !locked.containsKey(a.getDestination().getId()))
@@ -76,12 +79,12 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         			}
 	        			
         			//on update l'estimation de la distance restante entre le noeud et la destination
-        			estimation = a.getDestination().getPoint().distanceTo(data.getDestination().getPoint());
+        			estimation = a.getDestination().getPoint().distanceTo(data.getDestination().getPoint()) * mode;
         			LabelStar.getLabel(a.getDestination()).setEstim(estimation);
 	        			
 	        			
         			//on update le label du suivant
-        			LabelStar.getLabel(a.getDestination()).setCost(labelMin.getCout()+a.getLength());
+        			LabelStar.getLabel(a.getDestination()).setCost(labelMin.getCout()+data.getCost(a));
         			LabelStar.getLabel(a.getDestination()).setPrevNode(a.getOrigin());
         			LabelStar.getLabel(a.getDestination()).setPrevArc(a);
         			
