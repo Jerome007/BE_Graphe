@@ -21,12 +21,6 @@ public class LabelStar extends Label implements Comparable<Label>{
 		return this.cout;
 	}
 	
-	public void setCost(int i, int j)
-	{
-		this.cout = i;
-		this.cout_estime_dest = j;
-	}
-	
 	public void setEstim(double estimation) {
 		this.cout_estime_dest = estimation;
 	}

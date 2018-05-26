@@ -40,7 +40,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
        {
     	   new LabelStar(Double.POSITIVE_INFINITY,n,n.getPoint().distanceTo(data.getDestination().getPoint()) * mode);
        }
-       LabelStar.getLabel(data.getOrigin().getId()).setCost(0,0);
+       LabelStar.getLabel(data.getOrigin().getId()).setCost(0);
        tas.insert(LabelStar.getLabel(data.getOrigin().getId())); 
        notifyOriginProcessed(data.getOrigin());
        
