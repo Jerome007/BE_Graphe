@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.insa.algo.carpooling.AstarmodifAlgorithm;
+import org.insa.algo.carpooling.CarPoolingAlgorithm;
 import org.insa.algo.shortestpath.AStarAlgorithm;
 import org.insa.algo.shortestpath.BellmanFordAlgorithm;
 import org.insa.algo.shortestpath.DijkstraAlgorithm;
@@ -35,6 +37,8 @@ public class AlgorithmFactory {
 
         // Register your algorithms here:
         // registerAlgorithm(CarPoolingAlgorithm.class, "My Awesome Algorithm",
+        registerAlgorithm(CarPoolingAlgorithm.class, "A*-vol-d-oiseau", AstarmodifAlgorithm.class);
+        registerAlgorithm(CarPoolingAlgorithm.class, "A*-shortest-path", AstarmodifAlgorithm.class);
         // MyCarPoolingAlgorithm.class);
     }
 

@@ -45,7 +45,12 @@ import javax.swing.border.EmptyBorder;
 
 import org.insa.algo.AbstractSolution;
 import org.insa.algo.AlgorithmFactory;
+import org.insa.algo.carpooling.AstarmodifAlgorithm;
 import org.insa.algo.carpooling.CarPoolingAlgorithm;
+import org.insa.algo.carpooling.CarPoolingData;
+import org.insa.algo.carpooling.CarPoolingGraphicObserver;
+import org.insa.algo.carpooling.CarPoolingSolution;
+import org.insa.algo.carpooling.CarPoolingTextObserver;
 import org.insa.algo.packageswitch.PackageSwitchAlgorithm;
 import org.insa.algo.shortestpath.ShortestPathAlgorithm;
 import org.insa.algo.shortestpath.ShortestPathData;
@@ -203,6 +208,7 @@ public class MainWindow extends JFrame {
 
         spPanel = new AlgorithmPanel(this, ShortestPathAlgorithm.class, "Shortest-Path",
                 new String[]{ "Origin", "Destination" }, true);
+        
         spPanel.addStartActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -259,8 +265,70 @@ public class MainWindow extends JFrame {
                 true);
 
         psPanel = new AlgorithmPanel(this, PackageSwitchAlgorithm.class, "Car-Pooling",
-                new String[]{ "Oribin A", "Origin B", "Destination A", "Destination B" }, true);
+                new String[]{ "Origin A", "Origin B", "Destination A", "Destination B" }, true);
 
+        cpPanel.addStartActionListener(new ActionListener() {
+
+			@Override
+            public void actionPerformed(ActionEvent e) {
+                StartActionEvent evt = (StartActionEvent) e;
+                
+                CarPoolingData data = new CarPoolingData(graph, evt.getNodes().get(0),
+                        evt.getNodes().get(1), evt.getNodes().get(2), evt.getArcFilter(), drawing);
+
+                
+				CarPoolingAlgorithm cpAlgorithm = null;
+				
+				try {
+                    cpAlgorithm = (CarPoolingAlgorithm) AlgorithmFactory
+                            .createAlgorithm(evt.getAlgorithmClass(), data);
+                }
+                catch (Exception e1) {
+                    JOptionPane.showMessageDialog(MainWindow.this,
+                            "An error occurred while creating the specified algorithm.",
+                            "Internal error: Algorithm instantiation failure",
+                            JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                    return;
+                }
+				
+                cpPanel.setEnabled(false);
+
+                if (evt.isGraphicVisualizationEnabled()) {
+                	cpAlgorithm.addObserver(new CarPoolingGraphicObserver(drawing));
+                }
+                if (evt.isTextualVisualizationEnabled()) {
+                    cpAlgorithm.addObserver(new CarPoolingTextObserver(printStream));
+                }
+
+                final CarPoolingAlgorithm copyAlgorithm = cpAlgorithm;
+                launchThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Run the algorithm.
+                        CarPoolingSolution solution = copyAlgorithm.run();
+                        // Add the solution to the solution panel (but do not display
+                        // overlay).
+                        
+                        cpPanel.solutionPanel.addSolution(solution, false);
+                        // If the solution is feasible, add the path to the path panel.
+                        if (solution.isFeasible()) {
+                            pathPanel.addPath(solution.getPath());
+                            pathPanel.addPath(solution.getPath2());
+                            pathPanel.addPath(solution.getPath3());
+                        }
+                        // Show the solution panel and enable the shortest-path panel.
+                        cpPanel.solutionPanel.setVisible(true);
+                        cpPanel.setEnabled(true);
+                    }
+                });
+            }
+        });
+        
+        
+        
+        
+        
         // add algorithm panels
         algoPanels.add(wccPanel);
         algoPanels.add(spPanel);

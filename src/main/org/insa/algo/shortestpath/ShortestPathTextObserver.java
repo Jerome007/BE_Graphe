@@ -1,5 +1,6 @@
 package org.insa.algo.shortestpath;
 
+import java.awt.Color;
 import java.io.PrintStream;
 
 import org.insa.graph.Node;
@@ -32,6 +33,10 @@ public class ShortestPathTextObserver implements ShortestPathObserver {
     public void notifyDestinationReached(Node node) {
         // TODO Auto-generated method stub
 
+    }
+    
+    public void notifyMeetingReached(Node node) {
+    	// TODO Auto-generated method stub
     }
 
 }
