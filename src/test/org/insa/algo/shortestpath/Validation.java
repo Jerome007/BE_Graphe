@@ -160,6 +160,9 @@ public class Validation {
 	        i=0;
 	        
 	        
+	        int dist_valid=0;
+	        int temps_valid=0;
+	        double delta=0;
 	        
 	        System.out.println("Parcours des resultats");
 	        //Parcours des résultats
@@ -180,14 +183,20 @@ public class Validation {
 	        	System.out.println("Depart: " + liste_couple.get(i)[0] + " Arrivée: " + liste_couple.get(i)[1] + " Temps Dijkstra: " + couple_node.get(1).doubleValue() + " Temps Astar: " + couple_node.get(3).doubleValue() + "\n");
 	        	
 	        	//en distance
-	        	assertEquals(couple_node.get(0).doubleValue(), couple_node.get(2).doubleValue(), delta_distance);
+	        	//assertEquals(couple_node.get(0).doubleValue(), couple_node.get(2).doubleValue(), delta_distance);
+	        	delta = couple_node.get(0).doubleValue()-couple_node.get(0).doubleValue();	        	
+	        	if(-delta_distance <= delta || delta <= delta_distance) dist_valid++;
 	        	
 	        	//en temps
-	        	assertEquals(couple_node.get(0).doubleValue(), couple_node.get(2).doubleValue(), delta_temps);
+	        	//assertEquals(couple_node.get(1).doubleValue(), couple_node.get(3).doubleValue(), delta_temps);
+	        	delta = couple_node.get(1).doubleValue()-couple_node.get(3).doubleValue();
+	        	if(-delta_distance <= delta || delta <= delta_distance) temps_valid++;
 	        	
 	        	//on incremente i
 	        	i++;
 	        }     
+	        System.out.println("En distance: "+(dist_valid/i)+"%");
+	        System.out.println("En temps: "+(temps_valid/i)+"%");
 	        System.out.println("Fin du test");
 	    }
 }
